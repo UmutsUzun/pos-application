@@ -1,87 +1,43 @@
-import "./style.css";
-import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { Form, Input, Modal, Button, message } from "antd";
-const Categories = () => {
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [form] = Form.useForm();
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import Add from "./Add";
+import Edit from "./Edit";
+import "./style.css";
 
-  const onFinish = (values) => {
-    try {
-      fetch("http://localhost:5000/api/categories/add-category", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-      });
-      message.success("Kategori başarıyla eklendi.");
-      form.resetFields();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const Categories = ({ categories, setCategories }) => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   return (
     <ul className="flex gap-4 md:flex-col text-lg">
-      <li className="category-item">
-        <span>All</span>
-      </li>
-      <li className="category-item">
-        <span>Foods</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
-      <li className="category-item">
-        <span>Drinks</span>
-      </li>
+      {categories.map((item) => (
+        <li className="category-item" key={item._id}>
+          <span>{item.title}</span>
+        </li>
+      ))}
       <li
         className="category-item !bg-purple-800 hover:opacity-90"
         onClick={() => setIsAddModalOpen(true)}
       >
         <PlusOutlined className="md:text-2xl" />
       </li>
-      <Modal
-        title="Add new category"
-        onCancel={() => setIsAddModalOpen(false)}
-        footer={false}
-        open={isAddModalOpen}
+      <li
+        className="category-item !bg-orange-800 hover:opacity-90"
+        onClick={() => setIsEditModalOpen(true)}
       >
-        <Form layout="vertical" onFinish={onFinish} form={form}>
-          <Form.Item
-            name="title"
-            label="Add category"
-            rules={[{ required: true, message: "Category is required" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item className="flex justify-end mb-0">
-            <Button type="primary" htmlType="submit">
-              Create
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+        <EditOutlined className="md:text-2xl" />
+      </li>
+      <Add
+        isAddModalOpen={isAddModalOpen}
+        setIsAddModalOpen={setIsAddModalOpen}
+        setCategories={setCategories}
+        categories={categories}
+      />
+      <Edit
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
+        categories={categories}
+        setCategories={setCategories}
+      />
     </ul>
   );
 };
