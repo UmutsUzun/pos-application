@@ -1,153 +1,50 @@
+import { useEffect, useState } from "react";
+import ProductItem from "./ProductItem";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import Add from "./Add";
 
+const Products = ({ categories }) => {
+  const [products, setProducts] = useState([]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-const Products = () => {
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products/get-all");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getProducts();
+  }, []);
+
   return (
-    <div className="product-wrapper grid grid-cols-card gap-4 ">
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none">
-            <div className="product-img">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8fYfP1KwUDZt1T
-            a_lcPqiyHKScAXFOkdub8JqAfO-S4oek5MJJQmKS9Mh5bIV0uWrM9M&usqp=CAU" 
-            alt="apple_image" className="h-28 object-cover w-full border-b"/>
-            </div>
-            <div className="product-info flex flex-col p-3">
-                <span className="font-bold">Apple</span>
-                <span>£2</span>
-            </div>    
-        </div>
+    <div className="products-wrapper grid grid-cols-card gap-4">
+      {products.map((item) => (
+        <ProductItem item={item} key={item._id} />
+      ))}
+
+      <div
+        className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-purple-800 flex justify-center items-center hover:opacity-90 min-h-[180px]"
+        onClick={() => setIsAddModalOpen(true)}
+      >
+        <PlusOutlined className="text-white md:text-2xl" />
+      </div>
+      <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-orange-800 flex justify-center items-center hover:opacity-90 min-h-[180px]">
+        <EditOutlined className="text-white md:text-2xl" />
+      </div>
+      <Add
+        isAddModalOpen={isAddModalOpen}
+        setIsAddModalOpen={setIsAddModalOpen}
+        categories={categories}
+        products={products}
+        setProducts={setProducts}
+      />
     </div>
+  );
+};
 
-   
-        
-
-        
-
-    
-        
-        
-
-    
-  )
-}
-
-export default Products
+export default Products;
