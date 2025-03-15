@@ -1,5 +1,5 @@
-import { Modal, Form, Table, Input, Button, message } from "antd";
-import { useState } from "react";
+import {Form, Table, Button, message } from "antd";
+import { useEffect,useState } from "react";
 
 const Edit = ({
   setIsEditModalOpen,
@@ -7,20 +7,31 @@ const Edit = ({
   categories,
   setCategories,
 }) => {
-  const [editingRow, setEditingRow] = useState({});
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products/get-all");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getProducts();
+  }, []);
+
   const onFinish = (values) => {
     try {
       fetch("http://localhost:5000/api/categories/update-Product", {
         method: "PUT",
-        body: JSON.stringify({ ...values, ProductId: editingRow._id }),
+        body: JSON.stringify({ ...values, }),
         headers: { "Content-type": "application/json; charset=UTF-8" },
       });
       message.success("Product name updated succesfully");
       setCategories(
         categories.map((item) => {
-          if (item._id === editingRow._id) {
-            return { ...item, title: values.title };
-          }
           return item;
         })
       );
@@ -49,27 +60,38 @@ const Edit = ({
     {
       title: "Product Title",
       dataIndex: "title",
+      width:"8%",
       render: (_, record) => {
-        if (record._id === editingRow._id) {
-          return (
-            <Form.Item className="mb-0" name="title">
-              <Input defaultValue={record.title} />
-            </Form.Item>
-          );
-        } else {
           return <p>{record.title}</p>;
-        }
       },
+    },
+    {
+      title: "Product Image",
+      dataIndex: "img",
+      width:"2%",
+      render: (_, record) => {
+        return <img src={record.img} alt="" className=" h-20 object-cover" />
+    },
+    },
+    {
+      title: "Product Price",
+      dataIndex: "price",
+      width:"8%",
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      width:"8%",
     },
     {
       title: "Action",
       dataIndex: "action",
+      width:"8%",
       render: (_, record) => {
         return (
           <div>
             <Button
               type="link"
-              onClick={() => setEditingRow(record)}
               className="pl-0"
             >
               Edit
@@ -93,9 +115,13 @@ const Edit = ({
       <Form onFinish={onFinish}>
         <Table
           bordered
-          dataSource={categories}
+          dataSource={products}
           columns={columns}
           rowKey={"_id"}
+          scroll={{
+            x:1000,
+            y:600,
+          }}
         />
       </Form>
   );
