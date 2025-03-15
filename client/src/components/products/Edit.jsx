@@ -66,13 +66,13 @@ const Edit = () => {
   const deleteProduct = (id) => {
     if (window.confirm("Are you sure ?")) {
       try {
-        fetch("http://localhost:5000/api/categories/delete-category", {
+        fetch("http://localhost:5000/api/products/delete-product", {
           method: "DELETE",
-          body: JSON.stringify({ categoryId: id }),
+          body: JSON.stringify({ productId: id }),
           headers: { "Content-type": "application/json; charset=UTF-8" },
         });
-        message.success("Category deleted successfully");
-        setCategories(categories.filter((item) => item._id !== id));
+        message.success("Product deleted successfully");
+        setProducts(products.filter((item) => item._id !== id));
       } catch (error) {
         message.error("Something is wrong");
       }
@@ -122,7 +122,7 @@ const Edit = () => {
                 setEditingItem(record);
               }}
             >
-              Düzenle
+              Edit
             </Button>
             <Button
               type="link"
