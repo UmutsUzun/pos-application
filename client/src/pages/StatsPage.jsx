@@ -17,90 +17,91 @@ import {
 
 const StatisticPage = () => {
   const [data, setData] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    asyncFetch();
+    fetchInvoices();
+    fetchProducts();
   }, []);
 
-  const asyncFetch = () => {
-    fetch(
-      "https://gw.alipayobjects.com/os/bmw-prod/360c3eae-0c73-46f0-a982-4746a6095010.json"
-    )
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => {
-        console.log("fetch data failed", error);
-      });
+  const fetchInvoices = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/invoices/get-all");
+      const result = await response.json();
+      setData(result);
+    } catch (error) {
+      console.log("Fetch bills failed", error);
+    }
   };
 
-  // Pie Chart verisi
-  const pieData = [
-    { name: "Emin Başbayan", value: 287 },
-    { name: "Nur Başbayan", value: 57 },
-    { name: "Ahmet Demir", value: 111 },
-    { name: "Asım Altın", value: 67 },
-    { name: "Mehmet Güneş", value: 16 },
-  ];
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/products/get-all");
+      const result = await response.json();
+      setProducts(result);
+    } catch (error) {
+      console.log("Fetch products failed", error);
+    }
+  };
 
-  // Recharts Pie için renkler
+  const totalAmount = () => {
+    const amount = data.reduce((total, item) => total + item.totalAmount, 0);
+    return `£${amount.toFixed(2)}`;
+  };
+
+  // Pie chart 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28CD1"];
 
-  // Ortaya yazı eklemek için özel render fonksiyonu
-  const renderCenteredText = ({ viewBox }) => {
-    const { cx, cy } = viewBox;
-    return (
-      <text
-        x={cx}
-        y={cy}
-        fill="black"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize={14}
-        fontWeight="bold"
-      >
-        Total Earning
-      </text>
-    );
-  };
+  // Pie chart 
+  const pieData = Object.values(
+    data.reduce((acc, item) => {
+      if (!acc[item.customerName]) {
+        acc[item.customerName] = { name: item.customerName, value: 0 };
+      }
+      acc[item.customerName].value += item.totalAmount;
+      return acc;
+    }, {})
+  );
 
   return (
     <>
       <Header />
-      <div className="px-6">
+      <div className="px-6 pb-20">
         <h1 className="text-4xl font-bold text-center mb-4">Statistics</h1>
+
         <div className="statistic-section">
           <h2 className="text-lg">
             Welcome{" "}
             <span className="text-green-700 font-bold text-xl">admin</span>.
           </h2>
 
-          {/* Kartlar - Responsive Grid */}
+          {/* Carts */}
           <div className="statistic-cards grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 my-10 md:gap-10 gap-4">
             <StatisticCard
               title="Number of Customer"
-              amount="6"
+              amount={data.length}
               img="images/user.png"
             />
             <StatisticCard
-              title="Total Earning"
-              amount="£660.90"
+              title="Total Earnings "
+              amount={totalAmount()}
               img="images/money.png"
             />
             <StatisticCard
-              title="Total Sale"
-              amount="6"
+              title="Total Sales"
+              amount={data.length}
               img="images/sale.png"
             />
             <StatisticCard
               title="Total Product"
-              amount="28"
+              amount={products.length}
               img="images/product.png"
             />
           </div>
 
-          {/* Grafikler - Responsive Grid */}
+          {/* Graphs */}
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Area Chart - Satış Grafiği */}
+            {/* Area Chart */}
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
@@ -108,12 +109,12 @@ const StatisticPage = () => {
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="timePeriod" />
+                  <XAxis dataKey="customerName" />
                   <YAxis />
                   <Tooltip />
                   <Area
                     type="monotone"
-                    dataKey="value"
+                    dataKey="subTotal"
                     stroke="#8884d8"
                     fill="#8884d8"
                   />
@@ -121,23 +122,20 @@ const StatisticPage = () => {
               </ResponsiveContainer>
             </div>
 
-            {/* Pie Chart - Ortasında Yazı Olan Dağılım Grafiği */}
+            {/* Pie Chart */}
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  {/* Ortadaki Yazı */}
-                  {renderCenteredText({ viewBox: { cx: "50%", cy: "50%" } })}
-
-                  {/* Pie Chart */}
                   <Pie
                     data={pieData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60} // Donut Chart yapmak için iç yarıçap
+                    innerRadius={60}
                     outerRadius={100}
                     fill="#8884d8"
                     paddingAngle={5}
                     dataKey="value"
+                    label
                   >
                     {pieData.map((entry, index) => (
                       <Cell
@@ -159,3 +157,4 @@ const StatisticPage = () => {
 };
 
 export default StatisticPage;
+
