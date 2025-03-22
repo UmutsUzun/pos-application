@@ -1,5 +1,12 @@
 import { Modal, Button } from "antd";
-const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
+import {useRef} from "react";
+import {useReactToPrint} from "react-to-print";
+const PrintInvoice = ({ isModalOpen, setIsModalOpen, customer }) => {
+
+  const componentRef =useRef();
+  const handlePrint = useReactToPrint({
+    content:() => componentRef.current,
+  })
   return (
     <Modal
       title="Print Invoice"
@@ -8,7 +15,7 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
       onCancel={() => setIsModalOpen(false)}
       width={800}
     >
-      <section className="py-20 bg-black">
+      <section className="py-20 bg-black" ref={componentRef}>
         <div className="max-w-5xl mx-auto bg-white px-6">
           <article className="overflow-hidden">
             <div className="logo my-6">
@@ -31,13 +38,13 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
                 <div className="text-md text-slate-500">
                   <div>
                     <p className="font-bold text-slate-700">Invoice Number:</p>
-                    <p> GB-INV-789654</p>
+                    <p> GB-INV-000{Math.floor(Math.random() * 100)}</p>
                   </div>
                   <div>
                     <p className="font-bold text-slate-700 mt-2">
                       Date of Issue:
                     </p>
-                    <p>24/05/2023</p>
+                    <p>{customer?.createdAt.substring(0, 10)}</p>
                   </div>
                 </div>
                 <div className="text-md text-slate-500 sm:block hidden">
@@ -96,41 +103,43 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-slate-200">
-                    <td className="py-4 sm:table-cell hidden">
-                      <img
-                        src="https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg"
-                        alt=""
-                        className="w-12 h-12 object-cover"
-                      />
-                    </td>
-                    <td className="py-4 sm:table-cell hidden">
-                      <div className="flex flex-col">
-                        <span className="font-medium">Apple</span>
-                        <span className="sm:hidden inline-block text-xs">
-                        Unit Price £2
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4 sm:hidden" colSpan={4}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">Apple</span>
-                        <span className="sm:hidden inline-block text-xs">
-                          Unit Price £2
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4 text-center sm:table-cell hidden">
-                      <span>£2</span>
-                    </td>
-                    <td className="py-4 text-center sm:table-cell hidden">
-                      <span>4</span>
-                    </td>
+                  {customer?.cartItems.map((item) => (
+                    <tr className="border-b border-slate-200">
+                      <td className="py-4 sm:table-cell hidden">
+                        <img
+                          src={item.img}
+                          alt=""
+                          className="w-12 h-12 object-cover"
+                        />
+                      </td>
+                      <td className="py-4 sm:table-cell hidden">
+                        <div className="flex flex-col">
+                          <span className="font-medium">{item.title}</span>
+                          <span className="sm:hidden inline-block text-xs">
+                            Unit Price £{item.price}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-4 sm:hidden" colSpan={4}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{item.title}</span>
+                          <span className="sm:hidden inline-block text-xs">
+                          Unit Price £{item.price}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-4 text-center sm:table-cell hidden">
+                        <span>£{item.price.toFixed(2)}</span>
+                      </td>
+                      <td className="py-4 text-center sm:table-cell hidden">
+                        <span>{item.quantity}</span>
+                      </td>
 
-                    <td className="py-4 text-end">
-                      <span>£8</span>
-                    </td>
-                  </tr>
+                      <td className="py-4 text-end">
+                        <span>£{((item.price) * item.quantity).toFixed(2)}</span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
                 <tfoot>
                   <tr>
@@ -151,7 +160,7 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
                       <p className="font-normal text-slate-700">Subtotal</p>
                     </th>
                     <th className="text-right pt-4" scope="row">
-                      <span className="font-normal text-slate-700">£8</span>
+                      <span className="font-normal text-slate-700">£{customer?.subTotal}</span>
                     </th>
                   </tr>
                   <tr>
@@ -170,7 +179,7 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
                       <p className="font-normal text-slate-700">Tax</p>
                     </th>
                     <th className="text-right pt-4" scope="row">
-                      <span className="font-normal text-red-600">+£0.50</span>
+                      <span className="font-normal text-red-600">+£{customer?.tax}</span>
                     </th>
                   </tr>
                   <tr>
@@ -179,9 +188,7 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
                       colSpan="4"
                       scope="row"
                     >
-                      <span className="font-normal text-slate-700">
-                        Total
-                      </span>
+                      <span className="font-normal text-slate-700">Total</span>
                     </th>
                     <th
                       className="text-left pt-4 sm:hidden"
@@ -191,7 +198,7 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
                       <p className="font-normal text-slate-700">Total</p>
                     </th>
                     <th className="text-right pt-4" scope="row">
-                      <span className="font-normal text-slate-700">£8.50</span>
+                      <span className="font-normal text-slate-700">£{customer?.totalAmount}</span>
                     </th>
                   </tr>
                 </tfoot>
@@ -217,7 +224,7 @@ const PrintInvoice = ({ isModalOpen, setIsModalOpen }) => {
         </div>
       </section>
       <div className="flex justify-end mt-4">
-        <Button type="primary" size="large">
+        <Button type="primary" size="large" onClick={handlePrint}>
           Print
         </Button>
       </div>

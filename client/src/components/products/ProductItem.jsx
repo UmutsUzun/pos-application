@@ -1,5 +1,6 @@
 import { addProduct } from "../../redux/cartSlice";
 import { useDispatch} from "react-redux";
+import {message} from "antd"
  
  const ProductItem = ({item}) => {
 
@@ -7,6 +8,7 @@ import { useDispatch} from "react-redux";
 
   const handleClick = () => {
     dispatch(addProduct({...item,quantity:1}))
+    message.success("Product added to basket successfully")
   };
  
    return (

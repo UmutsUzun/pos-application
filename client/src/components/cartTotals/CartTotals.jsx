@@ -1,14 +1,16 @@
-import { Button } from 'antd'
+import { Button,message} from 'antd'
 import React from 'react'
 import {ClearOutlined, PlusCircleOutlined , MinusCircleOutlined} from "@ant-design/icons"
 import {useSelector} from "react-redux";
 import { useDispatch } from 'react-redux';
-import { deleteCart , increase,decrease } from '../../redux/cartSlice';
+import { deleteCart , increase,decrease,reset } from '../../redux/cartSlice';
+import { useNavigate } from "react-router-dom";
 
 
 const Cart_Totals = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch()
+  const navigate =useNavigate()
   return (
     <div className='cart h-full max-h-[calc(100vh_-_90px)] flex flex-col '>
       <h2 className='bg-blue-600 text-center py-4 text-white'>Items in the basket</h2>
@@ -21,7 +23,10 @@ const Cart_Totals = () => {
                       src={item.img}
                       alt="" 
                       className='w-16 h-16 object-cover cursor-pointer' 
-                      onClick={()=> dispatch(deleteCart(item))}
+                      onClick={()=> {
+                        dispatch(deleteCart(item))
+                        message.success("Product added to basket successfully")
+                      }}
                     />
                     <div className='flex flex-col ml-2'>
                       <b>{item.title}</b>
@@ -45,6 +50,7 @@ const Cart_Totals = () => {
                     if (item.quantity ===1){
                       if(window.confirm("Delete the product?")){
                         dispatch(decrease(item));
+                        message.success("Product deleted from basket successfully")
                       }
                     }
                     if(item.quantity > 1) {
@@ -54,13 +60,14 @@ const Cart_Totals = () => {
                   />
                   </div>
                 </li>
-        )) : "Basket is empty..."}
+        )).reverse()
+         : "Basket is empty..."}
       </ul>
       <div className="cart-totals mt-auto">
         <div className='border-t '>
           <div className='flex justify-between p-2'>
             <b>Subtotal:</b>
-            <span>{(cart.total).toFixed(2)}</span>
+            <span>£{(cart.total).toFixed(2)}</span>
           </div>
           <div className='flex justify-between p-2 '>
             <b>Tax: %{cart.tax }</b>
@@ -75,10 +82,21 @@ const Cart_Totals = () => {
         </div>
         <div className="py-4 px-2"> 
           <Button type="primary" size="large"
-          className='w-full'>New Order</Button>
+          className='w-full'
+          disabled = {cart.cartItems.length === 0}
+          onClick={()=> navigate("/cart")}
+          >New Order</Button>
           <Button type="primary" size="large"
           className='w-full mt-2 flex items-center'
-          icon ={<ClearOutlined />} danger>Remove</Button>
+          icon ={<ClearOutlined />} danger
+          disabled = {cart.cartItems.length === 0}
+          onClick={()=> {
+            if(window.confirm("Are you sure ?")){
+              dispatch(reset());
+              message.success("Basket emptied successfully.")
+            }
+          }}
+          >Remove</Button>
         </div>
       </div>    
     </div>

@@ -16,6 +16,11 @@ body {
   body{
     overflow: hidden;
   }
+
+  .anticon {
+    display: flex;
+    justify-content: center;
+  }
   
   .ant-btn-primary{
     background-color: #1677ff;

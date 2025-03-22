@@ -3,6 +3,7 @@ import {SearchOutlined , HomeOutlined ,ShoppingCartOutlined,CopyOutlined,UserOut
 import { Badge, Input } from 'antd';
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import "./index.css"
 
 const Header = () => {
     const cart = useSelector((state)=> state.cart);
@@ -24,18 +25,17 @@ const Header = () => {
                 className='rounded-full max-w-[800px]:'
                  />
                 </div>
-                <div className="menu-links flex justify-between items-center gap-7 md:static 
-                fixed z-50 bottom-0 md:w-auto w-screen md:bg-transparent bg-white left-0 md:border-t-0 border-t md:px-0 px-6 py-1 ">
+                <div className="menu-links">
                 
                 <Link
                     to={"/"}
-                     className='menu-link flex flex-col hover:text-[#40a9ff] transition-all'>
+                     className='menu-link'>
                         <span>
                         <HomeOutlined className='md:text-2xl text-xl'/> 
                         <span className='text-[10px] md:text-xs'>Home</span>
                         </span>
                 </Link>
-                    <Badge count={cart.cartItems.length} offset = {[0,6]} className='md:flex hidden'>
+                    <Badge count={cart.cartItems.length} offset = {[0,0]} className='md:flex hidden'>
                     <Link
                        to={"/cart"}
                     className='hover:text-[#40a9ff] transition-all'>
@@ -48,7 +48,7 @@ const Header = () => {
                     </Badge>
                     <Link
                         to={"/invoices"}
-                    className='menu-link flex flex-col hover:text-[#40a9ff] transition-all'>
+                    className='menu-link'>
                         <span>
                         <CopyOutlined className='md:text-2xl text-xl'/> 
                         <span className='text-[10px] md:text-xs'>Invoices</span>
@@ -56,30 +56,30 @@ const Header = () => {
                     </Link>
                     <Link
                         to={"/customers"}
-                    className='menu-link flex flex-col hover:text-[#40a9ff] transition-all'>
+                    className='menu-link'>
                         <span>
                         <UserOutlined className='md:text-2xl text-xl'/> 
                         <span className='text-[10px] md:text-xs'>Customers</span>
                         </span>
                     </Link>
                     <Link
-                        to={"/stats"} className='menu-link flex flex-col hover:text-[#40a9ff] transition-all'>
+                        to={"/stats"} className='menu-link'>
                         <span>
                         <BarChartOutlined  className='md:text-2xl text-xl'/> 
                         <span className='text-[10px] md:text-xs'>Stats</span>
                         </span>
                     </Link>
-                    <a href={"/"} className='menu-link flex flex-col hover:text-[#40a9ff] transition-all'>
+                    <a href={"/"} className='menu-link'>
                         <span>
                         <LogoutOutlined className='md:text-2xl text-xl'/> 
                         <span className='text-[10px] md:text-xs'>Logout</span>
                         </span>
                     </a>
                 </div>
-                <Badge count={cart.cartItems.length} offset={[0, 6]} className="md:hidden flex">
+                <Badge count={cart.cartItems.length} offset={[0, 0]} className="md:hidden flex">
                     <Link
                         to={"/"}
-                        className="menu-link flex flex-col hover:text-[#40a9ff] transition-all"
+                        className="menu-link"
                     >
                         <ShoppingCartOutlined className="text-2xl" />
                         <span className="md:text-xs text-[10px]">Cart</span>
