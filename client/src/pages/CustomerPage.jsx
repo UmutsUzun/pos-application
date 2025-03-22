@@ -1,36 +1,43 @@
 import Header from "../components/header/Header.jsx"
 import {Table } from "antd"
+import {useState,useEffect} from "react";
 
 const CustomerPage = () => {
-  const dataSource = [
-    {
-      key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-  ];
+    const [invoiceItems,setInvoiceItems] = useState([]);
+
+      useEffect(()=> {
+        const getBills = async () => {
+          try {
+            const res= await fetch ("http://localhost:5000/api/invoices/get-all")
+            const data = await res.json();
+            setInvoiceItems(data)
+          } catch (error) {
+            console.log(error)
+            
+          }
+        };
+    
+        getBills()
+    
+      }, []);
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Customer Name',
+      dataIndex: 'customerName',
+      key: 'customerName',
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Phone Number',
+      dataIndex: 'customerPhoneNumber',
+      key: 'customerPhoneNumber',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Date of Issue',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render:(text) => {
+        return(text.substring(0,10))
+      }
     },
   ];
   return (
@@ -38,7 +45,7 @@ const CustomerPage = () => {
       <Header />
       <div className="px-6">
         <h1 className="text-4xl font-bold text-center mb-4">Customers</h1>
-        <Table dataSource={dataSource}
+        <Table dataSource={invoiceItems}
          columns={columns} 
          bordered pagination={false} />    
       </div>
